@@ -3,6 +3,7 @@
 
 import os
 import re
+import time
 import mimetypes
 from mitmproxy import http
 
@@ -40,7 +41,7 @@ def request(flow: http.HTTPFlow):
         # print("%s | 尝试本地获取资源..."%urlpath)
         # ipdb.set_trace()
         if os.path.exists(fulllocalpath):
-            print("Read local file :: %s"%localpath)
+            # print("Read local file :: %s"%localpath)
             # getResFromLocal(flow, fulllocalpath)
             with open(fulllocalpath, 'rb') as fp:
                 headers = {}
@@ -51,11 +52,13 @@ def request(flow: http.HTTPFlow):
                 headers["Content-Length"] = str(fs[6])
                 headers["Content-type"] = mimetypes.guess_type(fulllocalpath.split("/")[-1])[0]
                 flow.response = http.HTTPResponse.make(200, fp.read(), headers=headers)
+
                 flow.intercept()
                 flow.reply.ack()
                 flow.reply.commit()
+                # flow.kill()
                 # print(flow.response.content)
-                # time.sleep(1)
+
                 # print(flow.response.is_replay)
         else:
             pass
@@ -72,7 +75,7 @@ def response(flow : http.HTTPFlow):
         if re.match(regx, urlpath.split("?")[0]):
             localreadflag = True
 
-    if localreadflag:
+    if localreadflag and flow.response.status_code == 200:
         # print("%s | 保存到本地..."%urlpath)
         # ipdb.set_trace()
         if os.path.exists(fulllocalpath):
@@ -81,7 +84,7 @@ def response(flow : http.HTTPFlow):
         else:
             res_body = flow.response.content
             # print(flow.response.content)
-            if res_body:
+            if res_body and len(res_body)>0:
                 try:
                     if not os.path.exists(os.path.dirname(fulllocalpath)):
                         os.makedirs(os.path.dirname(fulllocalpath), exist_ok=False)

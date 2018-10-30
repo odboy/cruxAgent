@@ -1,4 +1,4 @@
-/* globxxxxxxxxxxxxxxxxxal NexT: true */
+/* global NexT: true */
 
 $(document).ready(function () {
 

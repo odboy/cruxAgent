@@ -1,4 +1,3 @@
-// 在不在？
 /* global NexT: true */
 
 NexT.utils = NexT.$u = {

@@ -1,6 +1,8 @@
 https?://oddboy.cn/.*\.js$
 https?://oddboy.cn/.*\.css$
 https?://oddboy.cn/.*\.woff2$
+https?://oddboy.cn/.*\.png$
 http://www.oddboy.cn/.*\.txt
 http://www.oddboy.cn/.*\.html
+https?://www.vfsvisaservice.com/.*\.js
 # commit
